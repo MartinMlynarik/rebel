@@ -1,0 +1,15 @@
+wp-content/mu-plugins/*
+!wp-content/mu-plugins/autoloader.php
+wp-content/uploads
+
+wp-content/themes/*
+!wp-content/themes/rebel-theme
+!wp-content/themes/index.php
+
+wp-content/plugins/*
+!wp-content/plugins/index.php
+
+database
+vendor
+
+composer.lock

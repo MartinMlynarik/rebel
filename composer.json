@@ -1,0 +1,26 @@
+{
+    "name": "rebel/rebel-web",
+    "description": "rebel web desc",
+    "repositories":[
+        {
+            "type":"composer",
+            "url":"https://wpackagist.org",
+            "only": [
+                "wpackagist-plugin/*",
+                "wpackagist-theme/*"
+            ]
+        }
+    ],
+    "require": {
+        "wpackagist-plugin/akismet":"dev-trunk",
+        "wpackagist-plugin/amp":"dev-trunk"
+    },
+    "extra": {
+        "installer-paths": {
+            "wp-content/mu-plugins/{$name}/": [
+                "wpackagist-plugin/akismet",
+                "wpackagist-plugin/amp"
+            ]
+        }
+    }
+}

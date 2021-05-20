@@ -1,0 +1,9 @@
+{
+    "name": "rebel/tailwind-lumberjack-starter-theme",
+    "description": "tailwind-lumberjack-starter-theme desc",
+    "type": "theme",
+    "license": "MIT",
+    "require": {
+        "rareloop/lumberjack-core": "^5.0"
+    }
+}

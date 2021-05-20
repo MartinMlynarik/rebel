@@ -1,0 +1,81 @@
+version: '3.8'
+
+services:
+  db:
+    image: mariadb:latest
+    container_name: rebel-db
+    restart: always
+    volumes:
+      - ./../database:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: rebel-rootpass
+      MYSQL_DATABASE: rebel-dbname
+      MYSQL_USER: rebel-dbuser
+      MYSQL_PASSWORD: rebel-dbpass
+    networks:
+      - rebel-network
+    
+  wordpress:
+    image: wordpress:php7.4
+    container_name: rebel-wordpress
+    depends_on:
+      - db
+      - redis
+    restart: always
+    ports:
+      - "8580:80"
+    volumes:
+      - ./../wp-content:/var/www/html/wp-content
+    environment:
+      WORDPRESS_DB_HOST: rebel-db
+      WORDPRESS_DB_USER: rebel-dbuser
+      WORDPRESS_DB_PASSWORD: rebel-dbpass
+      WORDPRESS_DB_NAME: rebel-dbname
+      VIRTUAL_HOST: sub.domain2.com
+      LETSENCRYPT_HOST: sub.domain2.com
+      LETSENCRYPT_EMAIL: admin@domain2.com
+      WORDPRESS_CONFIG_EXTRA: |
+        define('WP_REDIS_HOST', 'rebel-redis');
+        define('WP_REDIS_PORT', 6379);
+        define('WP_CACHE_KEY_SALT', 'rebel-unique');
+        networks:
+          - rebel-network
+    
+  nginx: 
+    image: jwilder/nginx-proxy
+    container_name: nginx-proxy 
+    restart: always
+    ports: 
+      80:80
+      443:443
+    volumes:
+      - ~/certs:/etc/nginx/certs
+      - /var/run/docker.sock:/tmp/docker.sock:ro 
+      - /etc/nginx/vhost.d
+      - /usr/share/nginx/html
+    networks:
+      - rebel-network
+
+  nginx-comp:
+    image: jrcs/letsencrypt-nginx-proxy-companion
+    container_name: letsencrypt-nginx-proxy-companion
+    restart: always
+    volumes_from:
+      - nginx
+    volumes:
+      - ~/certs:/etc/nginx/certs:rw
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    
+
+  redis:
+    image: "redis:alpine"
+    container_name: rebel-redis
+    restart: always
+    networks:
+      - rebel-network
+  
+      
+
+networks:
+  rebel-network:
+    driver: bridge

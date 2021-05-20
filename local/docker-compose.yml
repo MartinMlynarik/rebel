@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  db:
+    image: mariadb:latest
+    container_name: rebel-db
+    restart: 'no'
+    volumes:
+      - ./../database:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: rebel-rootpass
+      MYSQL_DATABASE: rebel-dbname
+      MYSQL_USER: rebel-dbuser
+      MYSQL_PASSWORD: rebel-dbpass
+    networks:
+      - rebel-network
+
+  wordpress:
+    image: wordpress:php7.4
+    container_name: rebel-wordpress
+    depends_on:
+      - db
+    restart: 'no'
+    ports:
+      - "8585:80"
+    volumes:
+      - ./../wp-content:/var/www/html/wp-content
+    environment:
+      WORDPRESS_DB_HOST: rebel-db
+      WORDPRESS_DB_USER: rebel-dbuser
+      WORDPRESS_DB_PASSWORD: rebel-dbpass
+      WORDPRESS_DB_NAME: rebel-dbname
+    networks:
+      - rebel-network
+      
+
+networks:
+  rebel-network:
+    driver: bridge

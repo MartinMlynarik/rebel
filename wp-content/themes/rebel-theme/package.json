@@ -1,0 +1,29 @@
+{
+  "name": "wp-tailwind-lumberjack-theme-boilerplate",
+  "version": "1.0.0",
+  "description": "startup tailwind lumberjack theme",
+  "directories": {},
+  "scripts": {
+    "dev": "mix",
+    "watch": "mix watch",
+    "hot": "mix watch --hot",
+    "prod": "mix --production"
+  },
+  "author": "Rebel",
+  "license": "MIT",
+  "devDependencies": {
+    "browser-sync": "^2.26.14",
+    "browser-sync-webpack-plugin": "^2.3.0",
+    "cross-env": "^5.2.0",
+    "fs": "0.0.1-security",
+    "glob-all": "^3.2.1",
+    "laravel-mix": "^6.0.19",
+    "laravel-mix-purgecss": "^6.0.0",
+    "laravel-mix-versionhash": "2.0.1",
+    "resolve-url-loader": "2.3.1",
+    "sass": "^1.32.13",
+    "sass-loader": "11.1.1",
+    "tailwindcss": "^2.1.2"
+  },
+  "dependencies": {}
+}
