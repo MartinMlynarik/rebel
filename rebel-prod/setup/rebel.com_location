@@ -1,0 +1,2 @@
+root /var/www/html;
+try_files $uri $uri/ /index.php?$args;

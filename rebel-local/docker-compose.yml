@@ -4,7 +4,7 @@ services:
   db:
     image: mariadb:latest
     container_name: rebel-db
-    restart: 'no'
+    restart: always
     volumes:
       - ./../database:/var/lib/mysql
     environment:
@@ -14,17 +14,15 @@ services:
       MYSQL_PASSWORD: rebel-dbpass
     networks:
       - rebel-network
-
+    
   wordpress:
-    image: wordpress:php7.4
+    image: wordpress:php7.4-fpm-alpine
     container_name: rebel-wordpress
     depends_on:
       - db
-    restart: 'no'
-    ports:
-      - "8585:80"
+    restart: always
     volumes:
-      - ./../wp-content:/var/www/html/wp-content
+      - ./../wp:/var/www/html
     environment:
       WORDPRESS_DB_HOST: rebel-db
       WORDPRESS_DB_USER: rebel-dbuser
@@ -32,7 +30,20 @@ services:
       WORDPRESS_DB_NAME: rebel-dbname
     networks:
       - rebel-network
-      
+  
+  nginx:
+    image: nginx:latest
+    container_name: nginx 
+    restart: always
+    ports: 
+      - 8585:80
+    volumes:
+      - ./nginx:/etc/nginx/conf.d
+      - ./../wp:/var/www/html
+    links:
+      - wordpress
+    networks:
+      - rebel-network
 
 networks:
   rebel-network:

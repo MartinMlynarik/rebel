@@ -1,15 +1,14 @@
-wp-content/mu-plugins/*
-!wp-content/mu-plugins/autoloader.php
-wp-content/uploads
+wp/*
+!wp/wp-content/
 
-wp-content/themes/*
-!wp-content/themes/rebel-theme
-!wp-content/themes/index.php
+wp/wp-content/mu-plugins/*
+!wp/wp-content/mu-plugins/autoloader.php
+wp/wp-content/uploads/*
+wp/wp-content/themes/*
+!wp/wp-content/themes/rebel-theme
+!wp/wp-content/themes/index.php
+wp/wp-content/plugins/*
+!wp/wp-content/plugins/index.php
 
-wp-content/plugins/*
-!wp-content/plugins/index.php
-
-database
-vendor
-
-composer.lock
+/database
+/vendor

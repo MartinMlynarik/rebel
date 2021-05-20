@@ -6,7 +6,7 @@ services:
     container_name: rebel-db
     restart: always
     volumes:
-      - ./../database:/var/lib/mysql
+      - ./database:/var/lib/mysql
     environment:
       MYSQL_ROOT_PASSWORD: rebel-rootpass
       MYSQL_DATABASE: rebel-dbname
@@ -16,56 +16,60 @@ services:
       - rebel-network
     
   wordpress:
-    image: wordpress:php7.4
+    image: wordpress:php7.4-fpm-alpine
     container_name: rebel-wordpress
     depends_on:
       - db
       - redis
     restart: always
-    ports:
-      - "8580:80"
     volumes:
-      - ./../wp-content:/var/www/html/wp-content
+     - ./wp:/var/www/html 
+     - ./custom.ini:/usr/local/etc/php/conf.d/custom.ini
     environment:
       WORDPRESS_DB_HOST: rebel-db
       WORDPRESS_DB_USER: rebel-dbuser
       WORDPRESS_DB_PASSWORD: rebel-dbpass
       WORDPRESS_DB_NAME: rebel-dbname
-      VIRTUAL_HOST: sub.domain2.com
-      LETSENCRYPT_HOST: sub.domain2.com
-      LETSENCRYPT_EMAIL: admin@domain2.com
+      VIRTUAL_HOST: rebel.com
+      LETSENCRYPT_HOST: rebel.com
+      LETSENCRYPT_EMAIL: rebel@rebel.com
       WORDPRESS_CONFIG_EXTRA: |
         define('WP_REDIS_HOST', 'rebel-redis');
         define('WP_REDIS_PORT', 6379);
         define('WP_CACHE_KEY_SALT', 'rebel-unique');
-        networks:
-          - rebel-network
+        define('FORCE_SSL_ADMIN', true);
+    networks:
+      - rebel-network
     
-  nginx: 
-    image: jwilder/nginx-proxy
+  nginx-proxy:
+    image: nginxproxy/nginx-proxy
     container_name: nginx-proxy 
     restart: always
     ports: 
-      80:80
-      443:443
+      - 80:80
+      - 443:443
     volumes:
-      - ~/certs:/etc/nginx/certs
-      - /var/run/docker.sock:/tmp/docker.sock:ro 
-      - /etc/nginx/vhost.d
-      - /usr/share/nginx/html
+      - ./wp:/opt/rebel
+      - certs:/etc/nginx/certs
+      - html:/usr/share/nginx/html
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+      - ./setup:/etc/nginx/vhost.d
     networks:
       - rebel-network
 
   nginx-comp:
-    image: jrcs/letsencrypt-nginx-proxy-companion
-    container_name: letsencrypt-nginx-proxy-companion
+    image: nginxproxy/acme-companion
+    container_name: nginx-comp
+    depends_on:
+      - nginx-proxy
     restart: always
     volumes_from:
-      - nginx
+      - nginx-proxy
     volumes:
-      - ~/certs:/etc/nginx/certs:rw
+      - acme:/etc/acme.sh
       - /var/run/docker.sock:/var/run/docker.sock:ro
-    
+    networks:
+      - rebel-network
 
   redis:
     image: "redis:alpine"
@@ -73,8 +77,12 @@ services:
     restart: always
     networks:
       - rebel-network
-  
       
+
+volumes:
+  certs:
+  html:
+  acme:
 
 networks:
   rebel-network:

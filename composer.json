@@ -17,7 +17,7 @@
     },
     "extra": {
         "installer-paths": {
-            "wp-content/mu-plugins/{$name}/": [
+            "wp/wp-content/mu-plugins/{$name}/": [
                 "wpackagist-plugin/akismet",
                 "wpackagist-plugin/amp"
             ]

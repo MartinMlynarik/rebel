@@ -33,7 +33,7 @@ mix.sass('assets/scss/app.scss', 'css')
     ],
     })
 mix.purgeCss({
-    enabled: mix.inProduction(),
+    enabled: true,
     content: [
         `./views/**/*.twig`,
         `./scss/**/*.scss`

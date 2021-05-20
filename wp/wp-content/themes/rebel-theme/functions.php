@@ -26,3 +26,10 @@ add_action('wp_enqueue_scripts', function () {
 	wp_enqueue_style('app');
 	wp_enqueue_script('app');
 } );
+
+add_filter('timber/context', 'add_to_context');
+
+function add_to_context( $context ) {
+    $context['menu'] = new Timber\Menu('Primary Navigation');
+    return $context;
+}
